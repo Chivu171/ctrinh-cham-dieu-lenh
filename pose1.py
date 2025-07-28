@@ -1,106 +1,76 @@
-# pose.py
-from enum import Enum
-from abc import ABC, abstractmethod
-from constant import *
 
-class Side(Enum):
-    LEFT = "LEFT"
-    RIGHT = "RIGHT"
-    NONE = "NONE"
+from side import Side
 
-class Pose(ABC):
-    """Lớp trừu tượng đại diện cho một điểm pose."""
-    def __init__(self, x: float, y: float, z: float, name: str, side: Side):
+
+class Pose:
+    def __init__(self, x:float , y: float , z:float , name:str, side:Side):
         self.x = x
         self.y = y
         self.z = z
         self.name = name
         self.side = side
+    def update_coordinates(self, x:float , y: float , z:float):
+        self.x = x
+        self.y = y
+        self.z = z
 
-    @abstractmethod
-    def accept(self, visitor):
-        pass
 
-    def __str__(self):
-        return f"Pose(name={self.name}, side={self.side.value}, x={self.x:.4f}, y={self.y:.4f}, z={self.z:.4f})"
+head_height = 0.13
+neck_length = 0.129
+shoulder_to_elbow = 0.188
+elbow_to_wrist = 0.145
+wrist_to_fingertip = 0.108
+shoulder_width = 0.259
+shoulder_to_heel_height = 0.818
+wrist_to_heel_height = 0.485
+upper_torso_length = 0.174
+hip_width = 0.191
+hip_to_knee = 0.245
+knee_to_heel_height = 0.285
+hip_to_heel_height = 0.530
+knee_to_ankle = 0.246
+ankle_to_heel_height = 0.039
+foot_width = 0.055
+foot_length = 0.152
 
-class LeftKnee(Pose):
-    def __init__(self):
-        super().__init__(
-            x=hip_width / 2,  # 0.0955
-            y=knee_to_heel_height,  # 0.285
-            z=0.0,
-            name="left_knee",
-            side=Side.LEFT
-        )
+# hai cổ chân
+left_ankle = Pose(hip_width/2, ankle_to_heel_height, 0, "left_ankle", Side.LEFT)
+right_ankle = Pose(-hip_width/2, ankle_to_heel_height, 0, "right_ankle", Side.RIGHT)
 
-    def accept(self, visitor):
-        return visitor.visit_left_knee(self)
+# hai đầu gối
+left_knee = Pose(hip_width/2, knee_to_heel_height, 0, "left_knee", Side.LEFT)
+right_knee = Pose(-hip_width/2, knee_to_heel_height, 0, "right_knee", Side.RIGHT)
 
-class RightKnee(Pose):
-    def __init__(self):
-        super().__init__(
-            x=-hip_width / 2,  # -0.0955
-            y=knee_to_heel_height,  # 0.285
-            z=0.0,
-            name="right_knee",
-            side=Side.RIGHT
-        )
+# hai hông 
+left_hip = Pose(hip_width/2, hip_to_heel_height, 0, "left_hip", Side.LEFT)
+right_hip = Pose(-hip_width/2, hip_to_heel_height, 0, "right_hip", Side.RIGHT)
 
-    def accept(self, visitor):
-        return visitor.visit_right_knee(self)
+# hai vai
+left_shoulder = Pose(shoulder_width/2, shoulder_to_heel_height, 0, "left_shoulder", Side.LEFT)
+right_shoulder = Pose(-shoulder_width/2, shoulder_to_heel_height, 0, "right_shoulder", Side.RIGHT)
 
-class LeftWrist(Pose):
-    def __init__(self):
-        super().__init__(
-            x=shoulder_width / 2,  # 0.1295
-            y=wrist_to_heel_height,  # 0.485
-            z=0.0,
-            name="left_wrist",
-            side=Side.LEFT
-        )
+# hai cùi trỏ
+left_elbow = Pose(shoulder_width/2, shoulder_to_heel_height - shoulder_to_elbow, 0, "left_elbow", Side.LEFT)
+right_elbow = Pose(-shoulder_width/2, shoulder_to_heel_height - shoulder_to_elbow, 0, "right_elbow", Side.RIGHT)
 
-    def accept(self, visitor):
-        return visitor.visit_left_wrist(self)
+# hai gót chân
+left_heel = Pose(hip_width/2, 0, 0, "left_heel",Side.LEFT )
+right_heel = Pose (hip_width/2, 0, 0,"right_heel",Side.RIGHT)
 
-class RightWrist(Pose):
-    def __init__(self):
-        super().__init__(
-            x=-shoulder_width / 2,  # -0.1295
-            y=wrist_to_heel_height,  # 0.485
-            z=0.0,
-            name="right_wrist",
-            side=Side.RIGHT
-        )
+#cai co
+neck = Pose(0,shoulder_to_heel_height + neck_length ,0)
 
-    def accept(self, visitor):
-        return visitor.visit_right_wrist(self)
+#cai dau
+head = Pose(0, shoulder_to_heel_height + neck_length+head_height,0 )
 
-# Thêm các lớp con khác nếu cần, ví dụ:
-class LeftAnkle(Pose):
-    def __init__(self):
-        super().__init__(
-            x=hip_width / 2,  # 0.0955
-            y=ankle_to_heel_height,  # 0.039
-            z=0.0,
-            name="left_ankle",
-            side=Side.LEFT
-        )
+#hai cổ tay:
+left_wrist = Pose(shoulder_width/2, wrist_to_heel_height, 0, "left_wrist", Side.LEFT)
+right_wrist = Pose(-shoulder_width/2, wrist_to_heel_height, 0, "right_wrist", Side.RIGHT)
 
-    def accept(self, visitor):
-        return visitor.visit_left_ankle(self)
 
-class RightAnkle(Pose):
-    def __init__(self):
-        super().__init__(
-            x=-hip_width / 2,  # -0.0955
-            y=ankle_to_heel_height,  # 0.039
-            z=0.0,
-            name="right_ankle",
-            side=Side.RIGHT
-        )
 
-    def accept(self, visitor):
-        return visitor.visit_right_ankle(self)
 
-# Có thể thêm các lớp khác như LeftHeel, RightHeel, Neck, Head, v.v.
+
+
+
+
